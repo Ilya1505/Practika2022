@@ -1,0 +1,157 @@
+/*
+Created: 07.07.2022
+Modified: 07.07.2022
+Model: PostgreSQL 12
+Database: PostgreSQL 12
+*/
+
+-- Create tables section -------------------------------------------------
+
+-- Table Shop
+
+CREATE TABLE "Shop"
+(
+  "PK_shop" Serial NOT NULL,
+  "name" Character varying(200),
+  "address" Character varying(200)
+)
+WITH (
+  autovacuum_enabled=true)
+;
+
+ALTER TABLE "Shop" ADD CONSTRAINT "PK_Shop" PRIMARY KEY ("PK_shop")
+;
+
+-- Table Product_Category
+
+CREATE TABLE "Product_Category"
+(
+  "PK_product_category" Serial NOT NULL,
+  "name" Character varying(100)
+)
+WITH (
+  autovacuum_enabled=true)
+;
+
+ALTER TABLE "Product_Category" ADD CONSTRAINT "PK_Product_Category" PRIMARY KEY ("PK_product_category")
+;
+
+-- Table Product
+
+CREATE TABLE "Product"
+(
+  "PK_product" Serial NOT NULL,
+  "name" Character varying(100),
+  "price_without_discount" Real,
+  "price_with_discount" Real,
+  "unit" Character varying(50),
+  "PK_product_category" Integer NOT NULL
+)
+WITH (
+  autovacuum_enabled=true)
+;
+
+ALTER TABLE "Product" ADD CONSTRAINT "PK_Product" PRIMARY KEY ("PK_product","PK_product_category")
+;
+
+-- Table Revaluation
+
+CREATE TABLE "Revaluation"
+(
+  "PK_revaluation" Serial NOT NULL,
+  "type" Character varying(100),
+  "new_price" Real,
+  "date_start" Date,
+  "date_end" Date,
+  "PK_product" Integer NOT NULL,
+  "PK_product_category" Integer NOT NULL
+)
+WITH (
+  autovacuum_enabled=true)
+;
+
+CREATE INDEX "IX_Relationship6" ON "Revaluation" ("PK_product","PK_product_category")
+;
+
+ALTER TABLE "Revaluation" ADD CONSTRAINT "PK_Revaluation" PRIMARY KEY ("PK_revaluation")
+;
+
+-- Table Receipt
+
+CREATE TABLE "Receipt"
+(
+  "PK_receipt" Serial NOT NULL,
+  "date_receipt" Date,
+  "time_receipt" Time,
+  "FIO_cashier" Character varying(200),
+  "PK_shop" Integer NOT NULL
+)
+WITH (
+  autovacuum_enabled=true)
+;
+
+ALTER TABLE "Receipt" ADD CONSTRAINT "PK_Receipt" PRIMARY KEY ("PK_receipt","PK_shop")
+;
+
+-- Table String_Receipt
+
+CREATE TABLE "String_Receipt"
+(
+  "PK_string_receipt" Serial NOT NULL,
+  "count" Integer,
+  "PK_receipt" Integer NOT NULL,
+  "PK_shop" Integer NOT NULL,
+  "PK_product" Integer NOT NULL,
+  "PK_product_category" Integer NOT NULL
+)
+WITH (
+  autovacuum_enabled=true)
+;
+
+CREATE INDEX "IX_Relationship8" ON "String_Receipt" ("PK_product","PK_product_category")
+;
+
+ALTER TABLE "String_Receipt" ADD CONSTRAINT "PK_String_Receipt" PRIMARY KEY ("PK_string_receipt","PK_receipt","PK_shop")
+;
+
+-- Create foreign keys (relationships) section -------------------------------------------------
+
+ALTER TABLE "Receipt"
+  ADD CONSTRAINT "Relationship2"
+    FOREIGN KEY ("PK_shop")
+    REFERENCES "Shop" ("PK_shop")
+      ON DELETE CASCADE
+      ON UPDATE CASCADE
+;
+
+ALTER TABLE "Product"
+  ADD CONSTRAINT "Relationship5"
+    FOREIGN KEY ("PK_product_category")
+    REFERENCES "Product_Category" ("PK_product_category")
+      ON DELETE CASCADE
+      ON UPDATE CASCADE
+;
+
+ALTER TABLE "Revaluation"
+  ADD CONSTRAINT "Relationship6"
+    FOREIGN KEY ("PK_product", "PK_product_category")
+    REFERENCES "Product" ("PK_product", "PK_product_category")
+      ON DELETE CASCADE
+      ON UPDATE CASCADE
+;
+
+ALTER TABLE "String_Receipt"
+  ADD CONSTRAINT "Relationship7"
+    FOREIGN KEY ("PK_receipt", "PK_shop")
+    REFERENCES "Receipt" ("PK_receipt", "PK_shop")
+      ON DELETE CASCADE
+      ON UPDATE CASCADE
+;
+
+ALTER TABLE "String_Receipt"
+  ADD CONSTRAINT "Relationship8"
+    FOREIGN KEY ("PK_product", "PK_product_category")
+    REFERENCES "Product" ("PK_product", "PK_product_category")
+      ON DELETE CASCADE
+      ON UPDATE CASCADE
+;
