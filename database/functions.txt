@@ -22,7 +22,7 @@ $$ language plpgsql;
 --DROP FUNCTION store_income(  character varying, date, date ); --оставить если нужно перезаписать функцию
 --доход магазина за период
 create or replace function store_income(address_shop character varying, start_date date, end_date date)
-returns setof double precision as $$
+returns setof double precision (real!!!!!!!!!!!!!!!!!!!!!!!!) as $$
 begin
 --возвращаемые значения: доход магазина
 return query select sum (sr."all_price")
@@ -66,7 +66,7 @@ $$ language plpgsql;
 DROP FUNCTION income_with_product(  character varying, date, date ); --оставить если нужно перезаписать функцию
 --доход с проданного товара за период
 create or replace function income_with_product(name_product character varying, start_date date, end_date date)
-returns setof double precision as $$
+returns setof double precision (real!!!!!!!!!!!!!!!!!!) as $$
 begin
 --возвращаемые значения: доход с товара
 return query select sum (sr."all_price")
@@ -111,7 +111,7 @@ $$ language plpgsql;
 --DROP FUNCTION price_receipt_with_discount(  integer ); --оставить если нужно перезаписать функцию
 --полная цена чека по номеру чека
 create or replace function price_receipt_with_discount(ID_receipt integer)
-returns setof double precision as $$
+returns setof double precision (real!!!!!!!!!!!!!!!) as $$
 begin
 --возвращаемые значения: цена в чеке
 return query select sum (sr."all_price")
