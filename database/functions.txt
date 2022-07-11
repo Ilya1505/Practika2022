@@ -1,5 +1,5 @@
 1. количество чеков за период по адресу магазина (адрес магазина и период):
---DROP FUNCTION count_receipt_with_shop(  character varying, date, date ); оставить если нужно перезаписать функцию
+--DROP FUNCTION count_receipt_with_shop(  character varying, date, date ); --оставить если нужно перезаписать функцию
 --количество чеков за период
 create or replace function count_receipt_with_shop(address_shop character varying, start_date date, end_date date)
 returns setof bigint as $$
@@ -22,7 +22,7 @@ $$ language plpgsql;
 --DROP FUNCTION store_income(  character varying, date, date ); --оставить если нужно перезаписать функцию
 --доход магазина за период
 create or replace function store_income(address_shop character varying, start_date date, end_date date)
-returns setof double precision (real!!!!!!!!!!!!!!!!!!!!!!!!) as $$
+returns setof real as $$
 begin
 --возвращаемые значения: доход магазина
 return query select sum (sr."all_price")
@@ -40,7 +40,7 @@ $$ language plpgsql;
 --пример вызова функции: select store_income('Попова 25','2022-07-15','2022-07-15');
 
 3. сколько продано товара за конкретный период по названию товара (название, дату начала периода, дата окончания):
---DROP FUNCTION count_sale_product(  character varying, date, date ); оставить если нужно перезаписать функцию
+--DROP FUNCTION count_sale_product(  character varying, date, date ); --оставить если нужно перезаписать функцию
 --количество проданного товара за период
 create or replace function count_sale_product(name_product character varying, start_date date, end_date date)
 returns setof bigint as $$
@@ -63,10 +63,10 @@ $$ language plpgsql;
 
 4.сколько заработано денег с товара за конкретный период (название, дату начала периода, дата окончания):
 
-DROP FUNCTION income_with_product(  character varying, date, date ); --оставить если нужно перезаписать функцию
+--DROP FUNCTION income_with_product(  character varying, date, date ); --оставить если нужно перезаписать функцию
 --доход с проданного товара за период
 create or replace function income_with_product(name_product character varying, start_date date, end_date date)
-returns setof double precision (real!!!!!!!!!!!!!!!!!!) as $$
+returns setof real as $$
 begin
 --возвращаемые значения: доход с товара
 return query select sum (sr."all_price")
@@ -86,7 +86,7 @@ $$ language plpgsql;
 
 5. полная стоимость чека по номеру чека(без скидок)
 
---DROP FUNCTION price_receipt(  integer ); оставить если нужно перезаписать функцию
+--DROP FUNCTION price_receipt(  integer ); --оставить если нужно перезаписать функцию
 --полная цена чека по номеру чека
 create or replace function price_receipt(ID_receipt integer)
 returns setof double precision as $$
@@ -111,7 +111,7 @@ $$ language plpgsql;
 --DROP FUNCTION price_receipt_with_discount(  integer ); --оставить если нужно перезаписать функцию
 --полная цена чека по номеру чека
 create or replace function price_receipt_with_discount(ID_receipt integer)
-returns setof double precision (real!!!!!!!!!!!!!!!) as $$
+returns setof real as $$
 begin
 --возвращаемые значения: цена в чеке
 return query select sum (sr."all_price")
@@ -127,17 +127,17 @@ end;
 $$ language plpgsql;
 
 7.  сумма дохода за период
---DROP FUNCTION sum_money(date_start date, date_end date); --оставить если нужно перезаписать функцию
+DROP FUNCTION sum_money(date_start date, date_end date); --оставить если нужно перезаписать функцию
 --сумма дохода за период
 create or replace function sum_money(date_start date, date_end date)
-returns setof double precision as $$
+returns setof real as $$
 begin
 --возвращаемые значения: средний чек
 return query select sum(sr."all_price") from public."String_Receipt" as sr
 join public."Receipt" as r on sr."PK_receipt" = r."PK_receipt"
 where r."date_receipt">=date_start and r."date_receipt"<=date_end;
 --проверка на корректность переданных данных
-if end_date-start_date < 0 then
+if date_end-date_start < 0 then
 raise exception 'Задан отрицательный период!';
 end if;
 return;
@@ -151,10 +151,10 @@ create or replace function count_receipt(date_start date, date_end date)
 returns setof bigint as $$
 begin
 --возвращаемые значения: средний чек
-return query select count(*) from public."Receipt"
-where Receipt."date_receipt">=date_start and Receipt."date_receipt"<=date_end;
+return query select count(*) from public."Receipt" as rec
+where rec."date_receipt">=date_start and rec."date_receipt"<=date_end;
 --проверка на корректность переданных данных
-if end_date-start_date < 0 then
+if date_end-date_start < 0 then
 raise exception 'Задан отрицательный период!';
 end if;
 return;
