@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>724</width>
-    <height>519</height>
+    <width>1300</width>
+    <height>895</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <property name="geometry">
     <rect>
      <x>50</x>
-     <y>40</y>
-     <width>63</width>
+     <y>30</y>
+     <width>131</width>
      <height>20</height>
     </rect>
    </property>
@@ -42,7 +42,7 @@
   <widget class="QLabel" name="TypeLabel">
    <property name="geometry">
     <rect>
-     <x>370</x>
+     <x>350</x>
      <y>30</y>
      <width>63</width>
      <height>20</height>
@@ -52,14 +52,73 @@
     <string>TextLabel</string>
    </property>
   </widget>
-  <widget class="QCustomPlot" name="widget" native="true">
+  <widget class="QCustomPlot" name="FirstGraph" native="true">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>160</y>
+     <width>571</width>
+     <height>331</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="firstGraphLabel">
    <property name="geometry">
     <rect>
      <x>50</x>
-     <y>160</y>
-     <width>261</width>
-     <height>201</height>
+     <y>120</y>
+     <width>63</width>
+     <height>20</height>
     </rect>
+   </property>
+   <property name="text">
+    <string>TextLabel</string>
+   </property>
+  </widget>
+  <widget class="QCustomPlot" name="SecondGraph" native="true">
+   <property name="geometry">
+    <rect>
+     <x>700</x>
+     <y>160</y>
+     <width>481</width>
+     <height>331</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QWidget" name="ThirdGraph" native="true">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>560</y>
+     <width>571</width>
+     <height>291</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="ThirdGraphLabel">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>510</y>
+     <width>63</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>TextLabel</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="SecondGraphLabel">
+   <property name="geometry">
+    <rect>
+     <x>700</x>
+     <y>120</y>
+     <width>63</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>TextLabel</string>
    </property>
   </widget>
  </widget>

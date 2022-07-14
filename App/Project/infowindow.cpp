@@ -17,23 +17,95 @@ void InfoWindow::UpdateInfo(QString name, QString type)
 {
     if(type == "Product"){
         QString date1, date2, date3;
-        date1 = QDateTime::currentDateTime().addMonths(-1).toString();
-        date2 = QDateTime::currentDateTime().toString();
-        date3 = QDateTime::currentDateTime().addMonths(-2).toString();
-        double tent1, tent2;
         QSqlQuery query("SELECT cat.\"name\", "
-                        "count_sale_product(prod.\"name\", \'" + date1 + "\', \'" + date2 + "\') as cspNow, "
-                        "income_with_product(prod.\"name\", \'" + date1 + "\', \'" + date2 + "\') as iwpNow, "
-                        "count_sale_product(prod.\"name\", \'" + date3 + "\', \'" + date1 + "\') as cspOld, "
-                        "income_with_product(prod.\"name\", \'" + date3 + "\', \'" + date1 + "\') as iwpOld, "
                         "prod.* "
                         "From \"Product\" as prod "
                         "Join \"Product_Category\" as cat on prod.\"PK_product_category\"=cat.\"PK_product_category\""
                         "Where prod.\"name\"=\'" + name + "\'");
         query.next();
-        ui->NameLabel->setText(query.value(6).toString());
+        ui->NameLabel->setText(query.value(2).toString());
         ui->TypeLabel->setText(query.value(0).toString());
-        ui->PriceLabel->setText(query.value(7).toString());
-
+        ui->PriceLabel->setText(query.value(3).toString());
+        QVector<double> x1, y1, x2, y2;
+        QVector<double> ticks;
+        QVector<QString> labels;
+        for(int i = 0; i < 12; i++){
+            date1 = QDateTime::currentDateTime().addMonths(-12 + i).toString();
+            date2 = QDateTime::currentDateTime().addMonths(-12 + i + 1).toString();
+            ticks.push_back(i + 1);
+            labels.push_back(date1.split(" ").value(1) + "\n" + date1.split(" ").value(4));
+            query.clear();
+            query.exec("Select "
+                  "count_sale_product(prod.\"name\", \'" + date1 + "\', \'" + date2 + "\') as cspNow, "
+                  "income_with_product(prod.\"name\", \'" + date1 + "\', \'" + date2 + "\') as iwpNow, "
+                  "prod.* "
+                  "From \"Product\" as prod "
+                  "Where prod.\"name\"=\'" + name + "\'");
+            query.next();
+            x1.push_back(i + 1);
+            y1.push_back(query.value(0).toDouble());
+            x2.push_back(i + 1);
+            y2.push_back(query.value(1).toDouble());
+        }
+        QSharedPointer<QCPAxisTickerText> tex(new QCPAxisTickerText);
+        tex->addTicks(ticks, labels);
+        ui->firstGraphLabel->setText("Продажи");
+        ui->SecondGraphLabel->setText("Прибыль");
+        ui->FirstGraph->xAxis->setTicker(tex);
+        ui->FirstGraph->addGraph();
+        ui->FirstGraph->graph(0)->addData(x1, y1);
+        ui->FirstGraph->yAxis->rescale();
+        ui->FirstGraph->graph(0)->rescaleAxes();
+        ui->FirstGraph->replot();
+        ui->SecondGraph->xAxis->setTicker(tex);
+        ui->SecondGraph->addGraph();
+        ui->SecondGraph->graph(0)->addData(x2, y2);
+        ui->SecondGraph->graph(0)->rescaleAxes();
+        ui->SecondGraph->replot();
+    }
+    else if(type == "Shop"){
+        QString date1, date2, date3;
+        QSqlQuery query("SELECT sho.* "
+                        "From \"Shop\" as sho "
+                        "Where sho.\"address\"=\'" + name + "\'");
+        query.next();
+        ui->NameLabel->setText(query.value(2).toString());
+        ui->TypeLabel->setText("");
+        ui->PriceLabel->setText("");
+        QVector<double> x1, y1, x2, y2;
+        QVector<double> ticks;
+        QVector<QString> labels;
+        for(int i = 0; i < 12; i++){
+            date1 = QDateTime::currentDateTime().addMonths(-12 + i).toString();
+            date2 = QDateTime::currentDateTime().addMonths(-12 + i + 1).toString();
+            ticks.push_back(i + 1);
+            labels.push_back(date1.split(" ").value(1) + "\n" + date1.split(" ").value(4));
+            query.clear();
+            query.exec("Select "
+                  "count_receipt_with_shop(sh.\"address\", \'" + date1 + "\', \'" + date2 + "\') as crwsNow, "
+                  "store_income(sh.\"address\", \'" + date1 + "\', \'" + date2 + "\') as siNow "
+                  "From \"Shop\" as sh "
+                  "Where sh.\"address\"=\'" + name + "\'");
+            query.next();
+            x1.push_back(i + 1);
+            y1.push_back(query.value(0).toDouble());
+            x2.push_back(i + 1);
+            y2.push_back(query.value(1).toDouble());
+        }
+        QSharedPointer<QCPAxisTickerText> tex(new QCPAxisTickerText);
+        tex->addTicks(ticks, labels);
+        ui->firstGraphLabel->setText("Покупатели");
+        ui->SecondGraphLabel->setText("Прибыль");
+        ui->FirstGraph->xAxis->setTicker(tex);
+        ui->FirstGraph->addGraph();
+        ui->FirstGraph->graph(0)->addData(x1, y1);
+        ui->FirstGraph->yAxis->rescale();
+        ui->FirstGraph->graph(0)->rescaleAxes();
+        ui->FirstGraph->replot();
+        ui->SecondGraph->xAxis->setTicker(tex);
+        ui->SecondGraph->addGraph();
+        ui->SecondGraph->graph(0)->addData(x2, y2);
+        ui->SecondGraph->graph(0)->rescaleAxes();
+        ui->SecondGraph->replot();
     }
 }

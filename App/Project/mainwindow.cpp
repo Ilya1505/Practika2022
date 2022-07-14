@@ -200,7 +200,7 @@ void MainWindow::ShopShow(QString sort)
         tent2 = query.value(3).toDouble();
         if(tent2 == 0) tent2++;
         tent2 =  ((query.value(1).toDouble() - query.value(3).toDouble())/tent2) * 100;
-        ui->listWidget->addItem("Адрес: " + query.value(6).toString() + "\n" +
+        ui->listWidget->addItem("Адрес:" + query.value(6).toString() + "\n" +
                                 "Покупателей за месяц: " + query.value(0).toString() + " | "
                                 "Сравнение с прошлым месяцем: " + QString::number(tent1) + + "\%\n" +
                                 "Прибыль за месяц: " + query.value(1).toString() + " | "
@@ -212,12 +212,21 @@ void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 {
     if(OpenedTabel == "Product"){
         QStringList ddd = item->text().split("\n");
-        ddd = ddd.value(0).split(" ");
-        QString name = ddd.value(1);
         InfoWindow *Form = new InfoWindow;
+        Form->UpdateInfo(ddd.value(0), "Product");
         Form->exec();
-
     }
-
+    else if(OpenedTabel == "Shop"){
+        QStringList ddd = item->text().split("\n").value(0).split(":");
+        InfoWindow *Form = new InfoWindow;
+        Form->UpdateInfo(ddd.value(1), "Shop");
+        Form->exec();
+    }
+    else if(OpenedTabel == "Check"){
+        QStringList ddd = item->text().split("\n").value(0).split(":");
+        InfoWindow *Form = new InfoWindow;
+        Form->UpdateInfo(ddd.value(1), "Shop");
+        Form->exec();
+    }
 }
 
