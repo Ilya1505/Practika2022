@@ -1,0 +1,10 @@
+release/checkform.o
+release/infowindow.o
+release/main.o
+release/mainwindow.o
+release/qcustomplot.o
+release/tableitem.o
+release/moc_checkform.o
+release/moc_infowindow.o
+release/moc_mainwindow.o
+release/moc_qcustomplot.o

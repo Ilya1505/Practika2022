@@ -14,6 +14,10 @@ MainWindow::MainWindow(QWidget *parent)
     bool ok = db.open();
     if(ok){
         on_CheckButton_clicked();
+        ui->tableWidget->setShowGrid(true);
+        ui->tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+        ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+        ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     }
     else{
         QMessageBox msBox;
@@ -38,12 +42,14 @@ void MainWindow::on_GoodsButton_clicked()
     ui->SortBox->addItem("Цена");
     ui->SortBox->addItem("Продажи за месяц");
     ui->SortBox->addItem("Прибыль за месяц");
-    ui->SortBox->addItem("Изменение продаж");
-    ui->SortBox->addItem("Изменение прибыли");
     ui->FiltBox->setEnabled(1);
     ui->FiltButton->setEnabled(1);
-    ui->FiltBox->setText("Введите категорию");
-    Filt = "";
+    ui->FiltBox->clear();
+    QSqlQuery query("Select prod.* from \"Product_Category\" as prod");
+    while(query.next()){
+        ui->FiltBox->addItem(query.value(1).toString());
+    }
+    Filt = Sort = "";
 }
 
 
@@ -56,8 +62,12 @@ void MainWindow::on_CheckButton_clicked()
     ui->SortBox->addItem("Сумма");
     ui->FiltBox->setEnabled(1);
     ui->FiltButton->setEnabled(1);
-    ui->FiltBox->setText("Введите магазин");
-    Filt = "";
+    ui->FiltBox->clear();
+    QSqlQuery query("Select sh.* from \"Shop\" as sh");
+    while(query.next()){
+        ui->FiltBox->addItem(query.value(2).toString());
+    }
+    Filt = Sort = "";
 }
 
 void MainWindow::on_ShopButton_clicked()
@@ -71,7 +81,7 @@ void MainWindow::on_ShopButton_clicked()
     ui->SortBox->addItem("Изменение прибыли");
     ui->FiltBox->setDisabled(1);
     ui->FiltButton->setDisabled(1);
-    Filt = "";
+    Filt = Sort = "";
 }
 
 void MainWindow::on_SortButton_clicked()
@@ -79,7 +89,6 @@ void MainWindow::on_SortButton_clicked()
     QString sort("");
     QString filt("");
     if(OpenedTabel == "Receipt"){
-        QString sort("");
         if(ui->SortBox->currentIndex() == 0){
             sort = "Order by rep.\"date_receipt\", rep.\"time_receipt\"";
         }
@@ -115,31 +124,34 @@ void MainWindow::on_SortButton_clicked()
         }
         ShopShow(sort);
     }
+    Sort = sort;
 }
 
 
 void MainWindow::on_FiltButton_clicked()
 {
     if(OpenedTabel == "Product"){
-        GoodsShow("Where cat.\"name\"=\'" + ui->FiltBox->text() + "\'", "");
-        Filt = ui->FiltBox->text();
+        GoodsShow("Where cat.\"name\"=\'" + ui->FiltBox->currentText() + "\'", Sort);
+        Filt = ui->FiltBox->currentText();
     }
     else if(OpenedTabel == "Receipt"){
-        CheckShow("Where sh.\"address\"=\'" + ui->FiltBox->text() + "\'", "");
-        Filt = ui->FiltBox->text();
+        CheckShow("Where sh.\"address\"=\'" + ui->FiltBox->currentText() + "\'", Sort);
+        Filt = ui->FiltBox->currentText();
     }
 }
 
 void MainWindow::GoodsShow(QString filt, QString sort)
 {
-    ui->listWidget->clear();
+    ui->tableWidget->setRowCount(0);
+    ui->tableWidget->setColumnCount(7);
+    QStringList header;
+    header << "Название" << "Категория" << "Продано за месяц" << "Сравнение с прошлым месяцем" << "Цена" <<
+              "Заработано за месяц" << "Сравнение с прошлым месяцем";
+    ui->tableWidget->setHorizontalHeaderLabels(header);
     QString date1, date2, date3;
-    //date1 = QDateTime::currentDateTime().addMonths(-1).toString();
-    //date2 = QDateTime::currentDateTime().toString();
-    //date3 = QDateTime::currentDateTime().addMonths(-2).toString();
-    date1 = "2022-05-02";
-    date2 = "2022-06-02";
-    date3 = "2022-04-02";
+    date1 = QDateTime::currentDateTime().addMonths(-1).toString();
+    date2 = QDateTime::currentDateTime().toString();
+    date3 = QDateTime::currentDateTime().addMonths(-2).toString();
     double tent1, tent2;
     QSqlQuery query("SELECT cat.\"name\", "
                     "count_sale_product(prod.\"name\", \'" + date1 + "\', \'" + date2 + "\') as cspNow, "
@@ -149,6 +161,8 @@ void MainWindow::GoodsShow(QString filt, QString sort)
                     "prod.* "
                     "From \"Product\" as prod "
                     "Join \"Product_Category\" as cat on prod.\"PK_product_category\"=cat.\"PK_product_category\"" + filt + sort);
+    int i;
+    i = 0;
     while(query.next()){
         tent1 = query.value(3).toDouble();
         if(tent1 == 0) tent1++;
@@ -156,33 +170,49 @@ void MainWindow::GoodsShow(QString filt, QString sort)
         tent2 = query.value(4).toDouble();
         if(tent2 == 0) tent2++;
         tent2 =  ((query.value(2).toDouble() - query.value(4).toDouble())/tent2) * 100;
-        ui->listWidget->addItem(query.value(6).toString() + "\n" +
-                                "Категория: " + query.value(0).toString() + " | "
-                                "Продано за месяц: " + query.value(1).toString() + " " + query.value(8).toString() + " | "
-                                "Сравнение с прошлым месяцем: " + QString::number(tent1) + + "\%\n" +
-                                "Цена: " + query.value(7).toString() + " руб." + " | "
-                                "Заработано за месяц: " + query.value(2).toString() + " | "
-                                "Сравнение с прошлым месяцем: " + QString::number(tent2) + "\%");
+        ui->tableWidget->insertRow(i);
+        ui->tableWidget->setItem(i, 0, new QTableWidgetItem(query.value(6).toString()));
+        ui->tableWidget->setItem(i, 1, new QTableWidgetItem(query.value(0).toString()));
+        ui->tableWidget->setItem(i, 2, new QTableWidgetItem(query.value(1).toString() + " " + query.value(8).toString()));
+        ui->tableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(tent1) + + "\%"));
+        ui->tableWidget->setItem(i, 4, new QTableWidgetItem(query.value(7).toString() + " руб."));
+        ui->tableWidget->setItem(i, 5, new QTableWidgetItem(query.value(2).toString() + " руб."));
+        ui->tableWidget->setItem(i, 6, new QTableWidgetItem(QString::number(tent2) + "\%"));
+        i++;
     }
+    ui->tableWidget->resizeColumnsToContents();
 }
 
 void MainWindow::CheckShow(QString filt, QString sort)
 {
-    ui->listWidget->clear();
+    ui->tableWidget->setRowCount(0);
+    ui->tableWidget->setColumnCount(3);
+    QStringList header;
+    header << "Дата и время" << "Итоговая Сумма" << "Магазин";
+    ui->tableWidget->setHorizontalHeaderLabels(header);
     QSqlQuery query("SELECT price_receipt_with_discount(rep.\"PK_receipt\") as prwd, "
                     "sh.\"address\" , rep.* "
                     "From \"Receipt\" as rep "
                     "Join \"Shop\" as sh on rep.\"PK_shop\"=sh.\"PK_shop\" " + filt + sort);
+    int i;
+    i = 0;
     while(query.next()){
-        ui->listWidget->addItem("Дата и время: " + query.value(3).toString() + " " + query.value(4).toString() + "\n" +
-                                "Итоговая Сумма: " + query.value(0).toString() + "\n" +
-                                "Магазин: " + query.value(1).toString());
+        ui->tableWidget->insertRow(i);
+        ui->tableWidget->setItem(i, 0, new QTableWidgetItem(query.value(3).toString() + " " + query.value(4).toString()));
+        ui->tableWidget->setItem(i, 1, new QTableWidgetItem(query.value(0).toString() + " руб."));
+        ui->tableWidget->setItem(i, 2, new QTableWidgetItem(query.value(1).toString()));
+        i++;
     }
+    ui->tableWidget->resizeColumnsToContents();
 }
 
 void MainWindow::ShopShow(QString sort)
 {
-    ui->listWidget->clear();
+    ui->tableWidget->setRowCount(0);
+    ui->tableWidget->setColumnCount(5);
+    QStringList header;
+    header << "Адрес" << "Покупателей за месяц" << "Сравнение с прошлым месяцем" << "Прибыль за месяц" << "Сравнение с прошлым месяцем";
+    ui->tableWidget->setHorizontalHeaderLabels(header);
     QString date1, date2, date3;
     date1 = QDateTime::currentDateTime().addMonths(-1).toString();
     date2 = QDateTime::currentDateTime().toString();
@@ -193,6 +223,8 @@ void MainWindow::ShopShow(QString sort)
                     "count_receipt_with_shop(sh.\"address\", \'" + date3 + "\', \'" + date1 + "\') as crwsOld, "
                     "store_income(sh.\"address\", \'" + date3 + "\', \'" + date1 + "\') as siOld, sh.* "
                     "From \"Shop\" as sh " + sort);
+    int i;
+    i = 0;
     while(query.next()){
         tent1 = query.value(2).toDouble();
         if(tent1 == 0) tent1++;
@@ -200,33 +232,33 @@ void MainWindow::ShopShow(QString sort)
         tent2 = query.value(3).toDouble();
         if(tent2 == 0) tent2++;
         tent2 =  ((query.value(1).toDouble() - query.value(3).toDouble())/tent2) * 100;
-        ui->listWidget->addItem("Адрес:" + query.value(6).toString() + "\n" +
-                                "Покупателей за месяц: " + query.value(0).toString() + " | "
-                                "Сравнение с прошлым месяцем: " + QString::number(tent1) + + "\%\n" +
-                                "Прибыль за месяц: " + query.value(1).toString() + " | "
-                                "Сравнение с прошлым месяцем: " + QString::number(tent2) + + "\%");
+        ui->tableWidget->insertRow(i);
+        ui->tableWidget->setItem(i, 0, new QTableWidgetItem(query.value(6).toString()));
+        ui->tableWidget->setItem(i, 1, new QTableWidgetItem(query.value(0).toString()));
+        ui->tableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(tent1) + "\%\n"));
+        ui->tableWidget->setItem(i, 3, new QTableWidgetItem(query.value(1).toString() + " руб."));
+        ui->tableWidget->setItem(i, 4, new QTableWidgetItem(QString::number(tent2) + + "\%"));
+        i++;
     }
+    ui->tableWidget->resizeColumnsToContents();
 }
 
-void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
+void MainWindow::on_tableWidget_cellDoubleClicked(int row, int column)
 {
     if(OpenedTabel == "Product"){
-        QStringList ddd = item->text().split("\n");
-        InfoWindow *Form = new InfoWindow;
-        Form->UpdateInfo(ddd.value(0), "Product");
-        Form->exec();
+            InfoWindow *Form = new InfoWindow;
+            Form->UpdateInfo(ui->tableWidget->item(row, 0)->text(), "Product");
+            Form->exec();
     }
     else if(OpenedTabel == "Shop"){
-        QStringList ddd = item->text().split("\n").value(0).split(":");
-        InfoWindow *Form = new InfoWindow;
-        Form->UpdateInfo(ddd.value(1), "Shop");
-        Form->exec();
+            InfoWindow *Form = new InfoWindow;
+            Form->UpdateInfo(ui->tableWidget->item(row, 0)->text(), "Shop");
+            Form->exec();
     }
-    else if(OpenedTabel == "Check"){
-        QStringList ddd = item->text().split("\n").value(0).split(":");
-        InfoWindow *Form = new InfoWindow;
-        Form->UpdateInfo(ddd.value(1), "Shop");
-        Form->exec();
+    else if(OpenedTabel == "Receipt"){
+            CheckForm *Form = new CheckForm;;
+            Form->UpdateInfo(ui->tableWidget->item(row, 0)->text(), ui->tableWidget->item(row, 2)->text());
+            Form->exec();
     }
 }
 

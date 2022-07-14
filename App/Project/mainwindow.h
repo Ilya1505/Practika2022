@@ -8,6 +8,7 @@
 #include <QDateTime>
 #include <QListWidgetItem>
 #include <infowindow.h>
+#include <checkform.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -38,12 +39,13 @@ private slots:
 
     void ShopShow(QString sort);
 
-    void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
+    void on_tableWidget_cellDoubleClicked(int row, int column);
 
 private:
     Ui::MainWindow *ui;
     QSqlDatabase db;
     QString OpenedTabel;
     QString Filt;
+    QString Sort;
 };
 #endif // MAINWINDOW_H

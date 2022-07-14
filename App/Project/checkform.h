@@ -2,6 +2,8 @@
 #define CHECKFORM_H
 
 #include <QDialog>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
 namespace Ui {
 class CheckForm;
@@ -14,7 +16,7 @@ class CheckForm : public QDialog
 public:
     explicit CheckForm(QWidget *parent = nullptr);
     ~CheckForm();
-    void UpdateInfo(QString name);
+    void UpdateInfo(QString date, QString shop);
 
 private:
     Ui::CheckForm *ui;

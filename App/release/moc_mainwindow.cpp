@@ -23,7 +23,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
     const uint offsetsAndSize[30];
-    char stringdata0[217];
+    char stringdata0[207];
 };
 #define QT_MOC_LITERAL(ofs, len) \
     uint(offsetof(qt_meta_stringdata_MainWindow_t, stringdata0) + ofs), len 
@@ -41,17 +41,17 @@ QT_MOC_LITERAL(134, 4), // "filt"
 QT_MOC_LITERAL(139, 4), // "sort"
 QT_MOC_LITERAL(144, 9), // "CheckShow"
 QT_MOC_LITERAL(154, 8), // "ShopShow"
-QT_MOC_LITERAL(163, 31), // "on_listWidget_itemDoubleClicked"
-QT_MOC_LITERAL(195, 16), // "QListWidgetItem*"
-QT_MOC_LITERAL(212, 4) // "item"
+QT_MOC_LITERAL(163, 32), // "on_tableWidget_cellDoubleClicked"
+QT_MOC_LITERAL(196, 3), // "row"
+QT_MOC_LITERAL(200, 6) // "column"
 
     },
     "MainWindow\0on_GoodsButton_clicked\0\0"
     "on_CheckButton_clicked\0on_SortButton_clicked\0"
     "on_FiltButton_clicked\0on_ShopButton_clicked\0"
     "GoodsShow\0filt\0sort\0CheckShow\0ShopShow\0"
-    "on_listWidget_itemDoubleClicked\0"
-    "QListWidgetItem*\0item"
+    "on_tableWidget_cellDoubleClicked\0row\0"
+    "column"
 };
 #undef QT_MOC_LITERAL
 
@@ -77,7 +77,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,    2,   73,    2, 0x08,    6 /* Private */,
       10,    2,   78,    2, 0x08,    9 /* Private */,
       11,    1,   83,    2, 0x08,   12 /* Private */,
-      12,    1,   86,    2, 0x08,   14 /* Private */,
+      12,    2,   86,    2, 0x08,   14 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
@@ -88,7 +88,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void, QMetaType::QString, QMetaType::QString,    8,    9,
     QMetaType::Void, QMetaType::QString, QMetaType::QString,    8,    9,
     QMetaType::Void, QMetaType::QString,    9,
-    QMetaType::Void, 0x80000000 | 13,   14,
+    QMetaType::Void, QMetaType::Int, QMetaType::Int,   13,   14,
 
        0        // eod
 };
@@ -107,7 +107,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 5: _t->GoodsShow((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
         case 6: _t->CheckShow((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
         case 7: _t->ShopShow((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
-        case 8: _t->on_listWidget_itemDoubleClicked((*reinterpret_cast< std::add_pointer_t<QListWidgetItem*>>(_a[1]))); break;
+        case 8: _t->on_tableWidget_cellDoubleClicked((*reinterpret_cast< std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
         default: ;
         }
     }
@@ -121,7 +121,7 @@ const QMetaObject MainWindow::staticMetaObject = { {
     nullptr,
 qt_incomplete_metaTypeArray<qt_meta_stringdata_MainWindow_t
 , QtPrivate::TypeAndForceComplete<MainWindow, std::true_type>
-, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<QString, std::false_type>, QtPrivate::TypeAndForceComplete<QString, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<QString, std::false_type>, QtPrivate::TypeAndForceComplete<QString, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<QString, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<QListWidgetItem *, std::false_type>
+, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<QString, std::false_type>, QtPrivate::TypeAndForceComplete<QString, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<QString, std::false_type>, QtPrivate::TypeAndForceComplete<QString, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<QString, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<int, std::false_type>, QtPrivate::TypeAndForceComplete<int, std::false_type>
 
 
 >,
