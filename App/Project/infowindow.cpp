@@ -19,7 +19,7 @@ void InfoWindow::UpdateInfo(QString name, QString type)
     QVector<double> ticks;
     QVector<QString> labels;
     if(type == "Product"){
-        QString date1, date2, date3;
+        QString date1, date2;
         QSqlQuery query("SELECT cat.\"name\", "
                         "prod.* "
                         "From \"Product\" as prod "
@@ -32,8 +32,10 @@ void InfoWindow::UpdateInfo(QString name, QString type)
         ui->firstGraphLabel->setText("Продажи");
         ui->SecondGraphLabel->setText("Прибыль");
         for(int i = 0; i < 12; i++){
-            date1 = QDateTime::currentDateTime().addMonths(-12 + i).toString();
-            date2 = QDateTime::currentDateTime().addMonths(-12 + i + 1).toString();
+            //date1 = QDateTime::currentDateTime().addMonths(-12 + i).toString();
+            //date2 = QDateTime::currentDateTime().addMonths(-12 + i + 1).toString();
+            date1 = QDateTime::currentDateTime().addMonths(-18 + i).toString();
+            date2 = QDateTime::currentDateTime().addMonths(-18 + i + 1).toString();
             ticks.push_back(i + 1);
             labels.push_back(date1.split(" ").value(1) + "\n" + date1.split(" ").value(4));
             query.clear();
@@ -51,7 +53,7 @@ void InfoWindow::UpdateInfo(QString name, QString type)
         }
     }
     else {
-        QString date1, date2, date3;
+        QString date1, date2;
         QSqlQuery query("SELECT sho.* "
                         "From \"Shop\" as sho "
                         "Where sho.\"address\"=\'" + name + "\'");
@@ -62,8 +64,10 @@ void InfoWindow::UpdateInfo(QString name, QString type)
         ui->firstGraphLabel->setText("Покупатели");
         ui->SecondGraphLabel->setText("Прибыль");
         for(int i = 0; i < 12; i++){
-            date1 = QDateTime::currentDateTime().addMonths(-12 + i).toString();
-            date2 = QDateTime::currentDateTime().addMonths(-12 + i + 1).toString();
+            //date1 = QDateTime::currentDateTime().addMonths(-12 + i).toString();
+            //date2 = QDateTime::currentDateTime().addMonths(-12 + i + 1).toString();
+            date1 = QDateTime::currentDateTime().addMonths(-18 + i).toString();
+            date2 = QDateTime::currentDateTime().addMonths(-18 + i + 1).toString();
             ticks.push_back(i + 1);
             labels.push_back(date1.split(" ").value(1) + "\n" + date1.split(" ").value(4));
             query.clear();

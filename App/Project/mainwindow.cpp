@@ -149,9 +149,12 @@ void MainWindow::GoodsShow(QString filt, QString sort)
               "Заработано за месяц" << "Сравнение с прошлым месяцем";
     ui->tableWidget->setHorizontalHeaderLabels(header);
     QString date1, date2, date3;
-    date1 = QDateTime::currentDateTime().addMonths(-1).toString();
-    date2 = QDateTime::currentDateTime().toString();
-    date3 = QDateTime::currentDateTime().addMonths(-2).toString();
+    //date1 = QDateTime::currentDateTime().addMonths(-1).toString();
+    //date2 = QDateTime::currentDateTime().toString();
+    //date3 = QDateTime::currentDateTime().addMonths(-2).toString();
+    date1 = "2021-12-01";
+    date2 = "2022-01-01";
+    date3 = "2021-11-01";
     double tent1, tent2;
     QSqlQuery query("SELECT cat.\"name\", "
                     "count_sale_product(prod.\"name\", \'" + date1 + "\', \'" + date2 + "\') as cspNow, "
@@ -214,9 +217,12 @@ void MainWindow::ShopShow(QString sort)
     header << "Адрес" << "Покупателей за месяц" << "Сравнение с прошлым месяцем" << "Прибыль за месяц" << "Сравнение с прошлым месяцем";
     ui->tableWidget->setHorizontalHeaderLabels(header);
     QString date1, date2, date3;
-    date1 = QDateTime::currentDateTime().addMonths(-1).toString();
-    date2 = QDateTime::currentDateTime().toString();
-    date3 = QDateTime::currentDateTime().addMonths(-2).toString();
+    //date1 = QDateTime::currentDateTime().addMonths(-1).toString();
+    //date2 = QDateTime::currentDateTime().toString();
+    //date3 = QDateTime::currentDateTime().addMonths(-2).toString();
+    date1 = "2021-12-01";
+    date2 = "2022-01-01";
+    date3 = "2021-11-01";
     double tent1, tent2;
     QSqlQuery query("Select count_receipt_with_shop(sh.\"address\", \'" + date1 + "\', \'" + date2 + "\') as crwsNow, "
                     "store_income(sh.\"address\", \'" + date1 + "\', \'" + date2 + "\') as siNow, "
