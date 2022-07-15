@@ -29,8 +29,8 @@ void InfoWindow::UpdateInfo(QString name, QString type)
         ui->NameLabel->setText("Название: " + query.value(2).toString());
         ui->TypeLabel->setText("Категория: " + query.value(0).toString());
         ui->PriceLabel->setText("Цена: " + query.value(3).toString() + " руб.");
-        ui->firstGraphLabel->setText("Продажи");
-        ui->SecondGraphLabel->setText("Прибыль");
+        ui->firstGraphLabel->setText("Продажи (" + query.value(4).toString() + ")");
+        ui->SecondGraphLabel->setText("Доход (руб.)");
         for(int i = 0; i < 12; i++){
             //date1 = QDateTime::currentDateTime().addMonths(-12 + i).toString();
             //date2 = QDateTime::currentDateTime().addMonths(-12 + i + 1).toString();
@@ -58,11 +58,11 @@ void InfoWindow::UpdateInfo(QString name, QString type)
                         "From \"Shop\" as sho "
                         "Where sho.\"address\"=\'" + name + "\'");
         query.next();
-        ui->NameLabel->setText(query.value(2).toString());
+        ui->NameLabel->setText("Адрес: " + query.value(2).toString());
         ui->TypeLabel->setText("");
         ui->PriceLabel->setText("");
         ui->firstGraphLabel->setText("Покупатели");
-        ui->SecondGraphLabel->setText("Прибыль");
+        ui->SecondGraphLabel->setText("Доход (руб.)");
         for(int i = 0; i < 12; i++){
             //date1 = QDateTime::currentDateTime().addMonths(-12 + i).toString();
             //date2 = QDateTime::currentDateTime().addMonths(-12 + i + 1).toString();

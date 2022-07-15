@@ -28,7 +28,6 @@ void CheckForm::UpdateInfo(QString date, QString shop)
     ui->dateLabel->setText("Дата и время: " + query.value(4).toString() + " " + query.value(5).toString());
     ui->shopLabel->setText("Магазин: " + shop);
     ui->discountLabel->setText("Итоговая сумма: " + query.value(0).toString() + " руб.");
-    ui->priceLabel->setText("Сумма без скидки: " + query.value(1).toString() + " руб.");
     ui->tableWidget->setShowGrid(true);
     ui->tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);

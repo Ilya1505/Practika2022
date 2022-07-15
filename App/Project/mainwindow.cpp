@@ -41,7 +41,7 @@ void MainWindow::on_GoodsButton_clicked()
     ui->SortBox->clear();
     ui->SortBox->addItem("Цена");
     ui->SortBox->addItem("Продажи за месяц");
-    ui->SortBox->addItem("Прибыль за месяц");
+    ui->SortBox->addItem("Доход за месяц");
     ui->FiltBox->setEnabled(1);
     ui->FiltButton->setEnabled(1);
     ui->FiltBox->clear();
@@ -76,9 +76,7 @@ void MainWindow::on_ShopButton_clicked()
     OpenedTabel = "Shop";
     ui->SortBox->clear();
     ui->SortBox->addItem("Покупателей за месяц");
-    ui->SortBox->addItem("Прибыль за месяц");
-    ui->SortBox->addItem("Изменение покупателей");
-    ui->SortBox->addItem("Изменение прибыли");
+    ui->SortBox->addItem("Доход за месяц");
     ui->FiltBox->setDisabled(1);
     ui->FiltButton->setDisabled(1);
     Filt = Sort = "";
@@ -143,10 +141,10 @@ void MainWindow::on_FiltButton_clicked()
 void MainWindow::GoodsShow(QString filt, QString sort)
 {
     ui->tableWidget->setRowCount(0);
-    ui->tableWidget->setColumnCount(7);
+    ui->tableWidget->setColumnCount(5);
     QStringList header;
-    header << "Название" << "Категория" << "Продано за месяц" << "Сравнение с прошлым месяцем" << "Цена" <<
-              "Заработано за месяц" << "Сравнение с прошлым месяцем";
+    header << "Название" << "Категория" << "Продано за месяц \n (изменение относительно прошлого месяца)" << "Цена" <<
+              "Доход за месяц \n (изменение относительно прошлого месяца)";
     ui->tableWidget->setHorizontalHeaderLabels(header);
     QString date1, date2, date3;
     //date1 = QDateTime::currentDateTime().addMonths(-1).toString();
@@ -176,11 +174,9 @@ void MainWindow::GoodsShow(QString filt, QString sort)
         ui->tableWidget->insertRow(i);
         ui->tableWidget->setItem(i, 0, new QTableWidgetItem(query.value(6).toString()));
         ui->tableWidget->setItem(i, 1, new QTableWidgetItem(query.value(0).toString()));
-        ui->tableWidget->setItem(i, 2, new QTableWidgetItem(query.value(1).toString() + " " + query.value(8).toString()));
-        ui->tableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(tent1) + + "\%"));
-        ui->tableWidget->setItem(i, 4, new QTableWidgetItem(query.value(7).toString() + " руб."));
-        ui->tableWidget->setItem(i, 5, new QTableWidgetItem(query.value(2).toString() + " руб."));
-        ui->tableWidget->setItem(i, 6, new QTableWidgetItem(QString::number(tent2) + "\%"));
+        ui->tableWidget->setItem(i, 2, new QTableWidgetItem(query.value(1).toString() + " " + query.value(8).toString() + " (" + QString::number(tent1) + + "\%)"));
+        ui->tableWidget->setItem(i, 3, new QTableWidgetItem(query.value(7).toString() + " руб."));
+        ui->tableWidget->setItem(i, 4, new QTableWidgetItem(query.value(2).toString() + " руб." + " (" + QString::number(tent2) + "\%)"));
         i++;
     }
     ui->tableWidget->resizeColumnsToContents();
@@ -212,9 +208,10 @@ void MainWindow::CheckShow(QString filt, QString sort)
 void MainWindow::ShopShow(QString sort)
 {
     ui->tableWidget->setRowCount(0);
-    ui->tableWidget->setColumnCount(5);
+    ui->tableWidget->setColumnCount(3);
     QStringList header;
-    header << "Адрес" << "Покупателей за месяц" << "Сравнение с прошлым месяцем" << "Прибыль за месяц" << "Сравнение с прошлым месяцем";
+    header << "Адрес" << "Покупателей за месяц \n (изменение относительно прошлого месяца)"
+           << "Доход за месяц \n (изменение относительно прошлого месяца)";
     ui->tableWidget->setHorizontalHeaderLabels(header);
     QString date1, date2, date3;
     //date1 = QDateTime::currentDateTime().addMonths(-1).toString();
@@ -240,10 +237,8 @@ void MainWindow::ShopShow(QString sort)
         tent2 =  ((query.value(1).toDouble() - query.value(3).toDouble())/tent2) * 100;
         ui->tableWidget->insertRow(i);
         ui->tableWidget->setItem(i, 0, new QTableWidgetItem(query.value(6).toString()));
-        ui->tableWidget->setItem(i, 1, new QTableWidgetItem(query.value(0).toString()));
-        ui->tableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(tent1) + "\%\n"));
-        ui->tableWidget->setItem(i, 3, new QTableWidgetItem(query.value(1).toString() + " руб."));
-        ui->tableWidget->setItem(i, 4, new QTableWidgetItem(QString::number(tent2) + + "\%"));
+        ui->tableWidget->setItem(i, 1, new QTableWidgetItem(query.value(0).toString() + " (" + QString::number(tent1) + "\%)"));
+        ui->tableWidget->setItem(i, 2, new QTableWidgetItem(query.value(1).toString() + " руб. (" + QString::number(tent2) + + "\%)"));
         i++;
     }
     ui->tableWidget->resizeColumnsToContents();
